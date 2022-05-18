@@ -19,12 +19,14 @@ tr:nth-child(even) {
 </style>
 </head>
 <body>
-
 <table>
 <?php
     $limit = 9;
     if(isset($_GET["limit"])){
-        $limit = $_GET["limit"];
+        $limit = array_pop($_GET);
+        foreach($_GET as $key => $val){
+            echo $key."|".$val."<br>";
+        }
     }
     $filename = "wykaz.csv";
     $row = 0;
@@ -44,9 +46,6 @@ tr:nth-child(even) {
                     $newkey = str_replace('.', '', $newkey);
                     $newkey = str_replace(',', '', $newkey);
                     $newkey = strtolower($newkey);
-                }
-                foreach($keys as &$newkey){
-                    echo $newkey."<br>";
                 }
                 continue;
             }else{
@@ -69,13 +68,16 @@ tr:nth-child(even) {
     echo "</tr>";
 
     foreach($allData as $k => &$val){
-        echo "<tr>";
-        if(array_diff($val, $_GET) !== $val){
+        $filter = true;
+        foreach($_GET as $key => $v){
+            $filter = ($val[$key] == $v) ? $filter : false;
+        }
+        if($filter){
             foreach($val as $key => &$elem){
                 echo "<td>$elem</td>";
             }
         }
-        
+
         echo "</tr>";
         if($k == $limit){
             break;
