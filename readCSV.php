@@ -26,7 +26,6 @@ tr:nth-child(even) {
     if(isset($_GET["limit"])){
         $limit = $_GET["limit"];
     }
-    $getKeys = array_keys($_GET);
     $filename = "wykaz.csv";
     $row = 0;
     $keys;
@@ -40,9 +39,18 @@ tr:nth-child(even) {
                 for($c=0; $c < count($keys); $c++){
                     $x = $data[$c];
                 }
+                foreach($keys as &$newkey){
+                    $newkey = str_replace(' ', '', $newkey);
+                    $newkey = str_replace('.', '', $newkey);
+                    $newkey = str_replace(',', '', $newkey);
+                    $newkey = strtolower($newkey);
+                }
+                foreach($keys as &$newkey){
+                    echo $newkey."<br>";
+                }
                 continue;
             }else{
-                $ind = 0;
+                $ind = 0;    
                 foreach($keys as &$newkey){
                     $data[$newkey] = $data[$ind];
                     unset($data[$ind]);
@@ -62,10 +70,10 @@ tr:nth-child(even) {
 
     foreach($allData as $k => &$val){
         echo "<tr>";
-        foreach($val as $key => &$elem){
-            //if($elem){
+        if(array_diff($val, $_GET) !== $val){
+            foreach($val as $key => &$elem){
                 echo "<td>$elem</td>";
-            //}
+            }
         }
         
         echo "</tr>";
